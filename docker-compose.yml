@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - ./sql-scripts/:/docker-entrypoint-initdb.d/
+      - /postgres-data:/var/lib/postgresql/data
+    networks:
+      [ "rede" ]
+
+  chess-api:
+    build:
+      context: ./app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    volumes:
+      - ./app:/app
+
+    networks:
+      ["rede"]
+
+networks: {rede: {}}
